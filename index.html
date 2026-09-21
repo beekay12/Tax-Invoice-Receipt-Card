@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Invoice & Receipt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(at 50% 0%, #1e293b 0px, transparent 75%),
+        radial-gradient(at 100% 100%, #0f172a 0px, transparent 50%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .receipt {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.05),
+        0 20px 25px -5px rgba(0, 0, 0, 0.25),
+        0 8px 10px -6px rgba(0, 0, 0, 0.25);
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .receipt-header {
+      padding: 1.75rem 1.75rem 1.25rem 1.75rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .merchant-brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+    }
+
+    .logo-mark {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: #0f172a;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.6rem;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #166534;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: #16a34a;
+      border-radius: 50%;
+    }
+
+    .invoice-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 0.25rem;
+    }
+
+    .amount-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.03em;
+    }
+
+    .receipt-body {
+      padding: 1.5rem 1.75rem;
+    }
+
+    .grid-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .meta-label {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .meta-value {
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: #1e293b;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      margin-bottom: 0.85rem;
+    }
+
+    .line-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .line-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .item-info {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .item-thumb {
+      width: 36px;
+      height: 36px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      flex-shrink: 0;
+    }
+
+    .item-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 1.25;
+    }
+
+    .item-sku {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 2px;
+    }
+
+    .item-amount {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #0f172a;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .calc-breakdown {
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #f1f5f9;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #475569;
+    }
+
+    .calc-row.final {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0f172a;
+      padding-top: 0.5rem;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 0.25rem;
+    }
+
+    .payment-details {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-info {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .visa-logo {
+      font-weight: 800;
+      font-style: italic;
+      color: #1a1f71;
+      font-size: 0.95rem;
+      letter-spacing: -0.05em;
+    }
+
+    .card-num {
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .auth-code {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .merchant-footer {
+      text-align: center;
+      padding-top: 0.5rem;
+      border-top: 1px dashed #e2e8f0;
+    }
+
+    .legal-text {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    .actions-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      border-color: #cbd5e1;
+      color: #334155;
+    }
+
+    .btn-outline:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      color: #0f172a;
+    }
+
+    .btn-dark {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .btn-dark:hover {
+      background: #1e293b;
+    }
+
+    .site-footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .site-footer a {
+      color: #94a3b8;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+
+    .site-footer a:hover {
+      color: #f8fafc;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .receipt {
+        box-shadow: none;
+        border: none;
+      }
+      .actions-bar,
+      .site-footer {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="receipt">
+      <div class="receipt-header">
+        <div class="merchant-brand">
+          <div class="logo-mark">
+            <div class="logo-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+            <span>EXAMPLE RETAIL</span>
+          </div>
+          <div class="status-pill">
+            <span class="status-dot"></span>
+            <span>PAID</span>
+          </div>
+        </div>
+
+        <div class="invoice-title">Tax Invoice / Payment Receipt</div>
+        <div class="amount-display">R41,914.05</div>
+      </div>
+
+      <div class="receipt-body">
+        <div class="grid-meta">
+          <div class="meta-item">
+            <span class="meta-label">Invoice No</span>
+            <span class="meta-value">INV-2026-89420</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Date & Time</span>
+            <span class="meta-value">17 Sep 2026, 19:14</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Merchant VAT ID</span>
+            <span class="meta-value">4920184710</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Payment Ref</span>
+            <span class="meta-value">PAY-9042-881A</span>
+          </div>
+        </div>
+
+        <div class="section-label">Order Items</div>
+
+        <div class="line-items">
+          <div class="line-item">
+            <div class="item-info">
+              <div class="item-thumb">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              </div>
+              <div>
+                <div class="item-name">Pro Phone 256GB</div>
+                <div class="item-sku">SKU: PHN-5G-256 • Qty: 1</div>
+              </div>
+            </div>
+            <div class="item-amount">R18,999.00</div>
+          </div>
+
+          <div class="line-item">
+            <div class="item-info">
+              <div class="item-thumb">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+              </div>
+              <div>
+                <div class="item-name">Ultra Slim Laptop 15"</div>
+                <div class="item-sku">SKU: LPT-15-M3 • Qty: 1</div>
+              </div>
+            </div>
+            <div class="item-amount">R16,499.00</div>
+          </div>
+
+          <div class="line-item">
+            <div class="item-info">
+              <div class="item-thumb">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="10" y1="6" x2="14" y2="6"/></svg>
+              </div>
+              <div>
+                <div class="item-name">20000mAh Power Bank</div>
+                <div class="item-sku">SKU: PWR-20K-PD • Qty: 1</div>
+              </div>
+            </div>
+            <div class="item-amount">R799.00</div>
+          </div>
+        </div>
+
+        <div class="calc-breakdown">
+          <div class="calc-row">
+            <span>Subtotal</span>
+            <span style="font-family: 'JetBrains Mono', monospace;">R36,297.00</span>
+          </div>
+          <div class="calc-row">
+            <span>Express Courier Shipping</span>
+            <span style="font-family: 'JetBrains Mono', monospace;">R150.00</span>
+          </div>
+          <div class="calc-row">
+            <span>VAT (15%)</span>
+            <span style="font-family: 'JetBrains Mono', monospace;">R5,467.05</span>
+          </div>
+          <div class="calc-row final">
+            <span>Total Amount Paid</span>
+            <span style="font-family: 'JetBrains Mono', monospace;">R41,914.05</span>
+          </div>
+        </div>
+
+        <div class="section-label">Payment Authorization</div>
+
+        <div class="payment-details">
+          <div class="card-info">
+            <span class="visa-logo">VISA</span>
+            <span class="card-num">•••• 4242</span>
+          </div>
+          <span class="auth-code">AUTH: 084922</span>
+        </div>
+
+        <div class="merchant-footer">
+          <p class="legal-text">
+            Example Retail (Pty) Ltd • Reg: 2021/847201/07<br>
+            A copy of this electronic tax invoice has been sent to your registered email address.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-bar">
+      <button class="btn btn-outline" onclick="window.print()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print Invoice
+      </button>
+      <a href="#" class="btn btn-dark">
+        Return to Store
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <span>Designed & Built by</span>
+      <a href="https://github.com/beekay12" target="_blank" rel="noopener noreferrer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        github.com/beekay12
+      </a>
+    </footer>
+  </div>
+
+</body>
+</html>
